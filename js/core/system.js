@@ -42,8 +42,10 @@ SYS.debug = {
 	text:'',
 	initialize:function(){
 		SYS.debug.enabled = true
-		SYS.debug.div.style.width = '100%'
-		SYS.debug.div.style.height = '100%'
+		SYS.debug.div.style.width = 'auto'
+		SYS.debug.div.style.height = 'auto'
+		SYS.debug.div.style.left = '5px'
+		SYS.debug.div.style.top = '5px'
 		SYS.debug.div.style.position = 'fixed'
 		SYS.debug.div.style.zIndex = '99999'
 		SYS.debug.div.style.pointerEvents = 'none'
@@ -57,22 +59,20 @@ SYS.debug = {
 		SYS.debug.text = text
 	},
 	display:function(){
-		if (SYS.debug.enabled){SYS.debug.div.innerHTML = '<span style="background-color:rgba(0,0,0,0.5); user-select:none; -webkit-user-select:none">' + SYS.debug.text + '</span>'} else {console.log('debug is not enabled')}
+		if (SYS.debug.enabled){SYS.debug.div.innerHTML = '<span style=" user-select:none; -webkit-user-select:none">' + SYS.debug.text + '</span>'} else {console.log('debug is not enabled')}
 		setTimeout(function(){SYS.debug.display()},200)
+	},
+	compute:function(property){
+		if (SYS.debug.enabled){
+			SYS.fps[property].date[0] = SYS.fps[property].date[1]
+			SYS.fps[property].date[1] = Date.now()
+			SYS.fps[property].delta = SYS.fps[property].date[1] - SYS.fps[property].date[0]
+		}
 	}
 }
 
 SYS.draw = function(){
-	SYS.fps.draw.date[0] = SYS.fps.draw.date[1]
-	SYS.fps.draw.date[1] = Date.now()
-	SYS.fps.draw.delta = SYS.fps.draw.date[1] - SYS.fps.draw.date[0]
-	    
-	// for (var i = 0; i < SYS.layers.length; i++) {
-	// 	var p = SYS.layers[i]
-	// 	var ctx = SYS.layers[i].context
-	// 	ctx.clearRect(0,0,p.canvas.width,p.canvas.height)
-	// }
-
+	SYS.debug.compute('draw')
 	SYS.PIXI.renderer.render(SYS.PIXI.stage)
 
 	var drawObj = Object.keys(FUNC.draw)
@@ -82,11 +82,9 @@ SYS.draw = function(){
 }
 
 SYS.update = function(){
-	SYS.fps.calc.date[0] = SYS.fps.calc.date[1]
-	SYS.fps.calc.date[1] = Date.now()
-	SYS.fps.calc.delta = SYS.fps.calc.date[1] - SYS.fps.calc.date[0]
-
+	SYS.debug.compute('calc')
 	var updateObj = Object.keys(FUNC.update)
+
 	for (var i = 0; i < updateObj.length; i++) {FUNC.update[updateObj[i]]()}
 
 	requestAnimationFrame(SYS.update)

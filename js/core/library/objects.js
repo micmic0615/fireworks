@@ -1,7 +1,5 @@
-OBJ.layers = function(sort){
-	this.canvas = document.createElement('canvas')
-	this.context = this.canvas.getContext('2d')
-	this.sort = sort
+OBJ.layers = function(zIndex){
+	this.z = zIndex
 	this.ID = SYS.IDs.layers
 }
 
